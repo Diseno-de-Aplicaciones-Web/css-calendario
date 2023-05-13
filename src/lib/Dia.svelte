@@ -4,33 +4,47 @@
     $: clases = `${dataADiaDaSemana(dataDoEvento)} ${dataASemanaDoMes(dataDoEvento)}`
     $: diaDoMes = dataDoEvento.getDate()
 
+    function deInicioDomingoAInicioLunes(numeroDiaSemana) {
+        return (numeroDiaSemana+6)%7
+    }
+
     function dataADiaDaSemana(data) {
-        const nomesClases = ["domingo","luns","martes","mercores","xoves","venres","sabado"]
-        const numeroDoDia = data.getDay()
+        const nomesClases = ["luns","martes","mercores","xoves","venres","sabado","domingo"]
+        const numeroDoDia = deInicioDomingoAInicioLunes(data.getDay())
         return nomesClases[numeroDoDia]
     }
 
+    function distanciaDesdeDiaUnALuns(data) {
+        const dataReferencia = new Date(data)
+        const diaUn = new Date(dataReferencia.setDate(1))
+        const diaDaSemana = deInicioDomingoAInicioLunes(diaUn.getDay())
+        return diaDaSemana
+    }
+
     function dataASemanaDoMes(data) {
+        const desfaseSemana = distanciaDesdeDiaUnALuns(data)
         const numeroDiaMes = data.getDate()
-        const numeroDaSemana = Math.ceil(numeroDiaMes / 7)+1
+        const numeroDaSemana = Math.ceil((numeroDiaMes+desfaseSemana) / 7)
         return "semana"+numeroDaSemana
     }
+
+
     
 </script>
 
-<div class={"evento "+clases}>
+<div class={"dia "+clases}>
     <span>{diaDoMes}</span>
     <slot/>
 </div>
 
 <style>
-div {
+.dia {
     border: solid white 1px;
     padding: 0.5em 0.5em 0.5em 1em  ;
     position: relative;
     padding-top: 1em;
 }
-div > span {
+.dia > span {
     position: absolute;
     top: 0;
     left: 0.2em
@@ -57,21 +71,21 @@ div > span {
     grid-column: 7/8;
 }
 .semana1 {
-    grid-row: 2/3;
+    grid-row: 1/2;
 }
 .semana2 {
-    grid-row: 3/4;
+    grid-row: 2/3;
 }
 .semana3 {
-    grid-row: 4/5
+    grid-row: 3/4;
 }
 .semana4 {
-    grid-row: 5/6
+    grid-row: 4/5
 }
 .semana5 {
-    grid-row: 6/7
+    grid-row: 5/6
 }
 .semana6 {
-    grid-row: 7/8
+    grid-row: 6/7
 }
 </style>
